@@ -15,7 +15,7 @@ from keras.layers.convolutional import Cropping2D
 import matplotlib.pyplot as plt
 
 # Globals for Training/Testing
-EPOCHS = 3
+EPOCHS = 1
 CORRECTION_FACTOR = .2
 BATCH_SIZE = 36 # This number must be divisible by 6, because I sample each line 6 times
 
@@ -93,12 +93,8 @@ model.compile(loss='mse', optimizer='adam')
 # train the model
 #model.fit(X_train, y_train, validation_split=.2, shuffle=True, nb_epoch=EPOCHS)
 
-history_object = model.fit_generator(train_generator, samples_per_epoch =
-    len(train_samples), validation_data = 
-    validation_generator,
-    nb_val_samples = len(validation_samples), 
-    nb_epoch=EPOCHS, verbose=1)
-
+model.fit_generator(train_generator, steps_per_epoch= len(train_samples),
+validation_data=validation_generator, validation_steps=len(validation_samples), epochs=EPOCHS, verbose = 1)
 # print the keys contained in the history object
 #print(history_object.history.keys())
 
