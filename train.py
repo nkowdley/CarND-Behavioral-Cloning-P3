@@ -8,6 +8,7 @@ import csv
 import cv2
 import numpy as np
 from sklearn.model_selection import train_test_split
+import sklearn
 from keras.models import Model, Sequential
 from keras.layers import Flatten, Dense, Lambda, Convolution2D
 from keras.layers.convolutional import Cropping2D
