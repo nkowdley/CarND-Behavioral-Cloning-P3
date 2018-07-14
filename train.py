@@ -48,10 +48,10 @@ def generator(samples, batch_size = BATCH_SIZE):
                 right_measurement = measurement - CORRECTION_FACTOR
                 # capture the images for the center, left and right cameras
                 augmented_images.extend([center_image, left_image, right_image])
-                augmented_measurements.extend([measurements, left_measurement, right_measurement])
+                augmented_measurements.extend([measurement, left_measurement, right_measurement])
                 # and the flipped image, so we get twice the data for free
                 augmented_images.extend([cv2.flip(center_image, 1), cv2.flip(left_image, 1), cv2.flip(right_image, 1)])
-                augmented_measurements.extend([measurement * -1.0, left_measurement* -1.0, right_measurement* -1.0] )
+                augmented_measurements.extend([measurement * -1.0, left_measurement * -1.0, right_measurement * -1.0] )
 
             # Put the data into numpy arrays so that keras can use it
             X_train = np.array(augmented_images)
