@@ -74,7 +74,7 @@ model = Sequential()
 #Normalize the data
 model.add(Lambda(lambda x: x / 255.0 - 0.5, input_shape=(160, 320, 3))) #normalize the data and give it a mean of 0
 # Crop the data
-model.add(Cropping2d(cropping=((70,25),(0,0))))
+model.add(Cropping2D(cropping=((70,25),(0,0))))
 # Nvidia model taken from: https://devblogs.nvidia.com/deep-learning-self-driving-cars/
 model.add(Convolution2D(24, 5, 5, subsample=(2,2), activation='relu'))
 model.add(Convolution2D(36, 5, 5, subsample=(2,2), activation='relu'))
