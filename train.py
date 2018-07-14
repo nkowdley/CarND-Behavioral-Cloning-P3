@@ -19,11 +19,11 @@ CORRECTION_FACTOR = .2
 BATCH_SIZE = 36 # This number must be divisible by 6, because I sample each line 6 times
 
 def get_filename(path):
-"""
-a helper function to get the filename of an image. 
-This function splits a path provided by the argument by '/'
-and returns the last element of the result
-"""
+    """
+    a helper function to get the filename of an image. 
+    This function splits a path provided by the argument by '/'
+    and returns the last element of the result
+    """
     return source_path.split('/')[-1]
 
 def generator(samples, batch_size = BATCH_SIZE):
