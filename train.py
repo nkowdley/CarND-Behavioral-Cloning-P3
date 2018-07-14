@@ -37,7 +37,7 @@ def generator(samples, batch_size = BATCH_SIZE):
             augmented_images, augmented_measurements = [],[]
             for batch_sample in batch_samples:
                 # Load the images
-                path = '../data/IMG/' # The current path of where the data is located
+                path = './data/IMG/' # The current path of where the data is located
                 center_image = cv2.imread(path + get_filename(line[0]))
                 left_image = cv2.imread(path + get_filename(line[1]))
                 right_image = cv2.imread(path + get_filename(line[2]))
@@ -59,7 +59,7 @@ def generator(samples, batch_size = BATCH_SIZE):
 
 
 lines = []
-with open('../data/driving_log.csv') as csvfile:
+with open('./data/driving_log.csv') as csvfile:
     reader = csv.reader(csvfile)
     for line in reader:
         lines.append(line)
