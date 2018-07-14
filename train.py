@@ -15,9 +15,9 @@ from keras.layers.convolutional import Cropping2D
 import matplotlib.pyplot as plt
 
 # Globals for Training/Testing
-EPOCHS = 3
+EPOCHS = 5
 CORRECTION_FACTOR = .2
-BATCH_SIZE = 36 # This number must be divisible by 6, because I sample each line 6 times
+BATCH_SIZE = 32 # This number must be divisible by 6, because I sample each line 6 times
 
 def get_filename(path):
     """
