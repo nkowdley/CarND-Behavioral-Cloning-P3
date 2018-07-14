@@ -25,7 +25,7 @@ def get_filename(path):
     This function splits a path provided by the argument by '/'
     and returns the last element of the result
     """
-    return source_path.split('/')[-1]
+    return path.split('/')[-1]
 
 def generator(samples, batch_size = BATCH_SIZE):
     num_samples = len(samples)
@@ -33,7 +33,8 @@ def generator(samples, batch_size = BATCH_SIZE):
         shuffle(samples)
         for offset in range(0, num_samples, batch_size):
             lines_to_process = batch_size/6
-            batch_samples = samples[offset:offset+batch_size]
+            print(type(lines_to_process))
+            batch_samples = samples[offset:offset+lines_to_process]
 
             augmented_images, augmented_measurements = [],[]
             for batch_sample in batch_samples:
