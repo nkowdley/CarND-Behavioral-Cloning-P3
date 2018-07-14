@@ -52,7 +52,7 @@ def generator(samples, batch_size = BATCH_SIZE):
                 augmented_images.extend(cv2.flip(center_image, 1), cv2.flip(left_image, 1), cv2.flip(right_image, 1))
                 augmented_measurements.extend(measurement * -1.0, left_measurement* -1.0, right_measurement* -1.0 )
 
-            # trim image to only see section with road
+            # Put the data into numpy arrays so that keras can use it
             X_train = np.array(augmented_images)
             y_train = np.array(augmented_measurements)
             yield sklearn.utils.shuffle(X_train, y_train)
@@ -68,11 +68,6 @@ train_samples, validation_samples = train_test_split(lines, test_size = 0.2)
 
 train_generator = generator(train_samples, batch_size = BATCH_SIZE)
 validation_generator = generator(validation_samples, batch_size = BATCH_SIZE)
-
-
-# Put the data into numpy arrays so that keras can use it
-X_train = np.array(augmented_images)
-y_train = np.array(augmented_measurements)
 
 #Instantiate the model
 model = Sequential()
