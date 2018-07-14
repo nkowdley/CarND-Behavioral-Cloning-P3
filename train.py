@@ -7,7 +7,7 @@ This script does data ingestion and training
 import csv
 import cv2
 import numpy as np
-import sklearn
+from sklearn.utils import shuffle
 from sklearn.model_selection import train_test_split
 from keras.models import Model, Sequential
 from keras.layers import Flatten, Dense, Lambda, Convolution2D
@@ -56,7 +56,7 @@ def generator(samples, batch_size = BATCH_SIZE):
             # Put the data into numpy arrays so that keras can use it
             X_train = np.array(augmented_images)
             y_train = np.array(augmented_measurements)
-            yield sklearn.utils.shuffle(X_train, y_train)
+            yield shuffle(X_train, y_train)
 
 
 lines = []
