@@ -93,9 +93,7 @@ model.compile(loss='mse', optimizer='adam')
 # train the model
 #model.fit(X_train, y_train, validation_split=.2, shuffle=True, nb_epoch=EPOCHS)
 
-model.fit_generator(train_generator, samples_per_epoch= /
-            len(train_samples), validation_data=validation_generator, /
-            nb_val_samples=len(validation_samples), nb_epoch=EPOCHS)
+model.fit_generator(train_generator, samples_per_epoch= len(train_samples), validation_data=validation_generator, nb_val_samples=len(validation_samples), nb_epoch=EPOCHS)
 # print the keys contained in the history object
 #print(history_object.history.keys())
 
