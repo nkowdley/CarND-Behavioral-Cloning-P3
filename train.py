@@ -10,7 +10,6 @@ import matplotlib.image as mpimg
 import numpy as np
 from sklearn.utils import shuffle
 from sklearn.model_selection import train_test_split
-from keras import backend as K
 from keras.models import Model, Sequential
 from keras.layers import Flatten, Dense, Lambda, Convolution2D, MaxPooling2D, Dropout, SpatialDropout2D
 from keras.layers.convolutional import Cropping2D
@@ -20,7 +19,7 @@ from pprint import pprint
 
 # Globals and Hyperparameters for Training/Testing
 EPOCHS = 5
-CORRECTION_FACTOR = .1
+CORRECTION_FACTOR = .3
 BATCH_SIZE = 128 # This number must be divisible by 6, because I sample each line 6 times
 STRAIGHT_KEEP_PROB = .8
 STRAIGHT_THRESHOLD = .1
@@ -62,7 +61,6 @@ def remove_straights(samples, drop_prob = STRAIGHT_KEEP_PROB, threshold = STRAIG
         if abs(float(measurement)) < threshold:
             if np.random.rand() < drop_prob:
                 del samples[i]
-                i = i -1
         i += 1
     return samples
 
@@ -117,8 +115,7 @@ validation_generator = generator(validation_samples, batch_size = BATCH_SIZE)
 #Instantiate the model
 model = Sequential()
 #Normalize the data
-model.add(Lambda(lambda x: K.tf.image.resize_images(x, (80, 160)), input_shape=(160, 320, 3)))
-model.add(Lambda(lambda x:  x / 127.5 - 1.)) #normalize the data and give it a mean of 0
+model.add(Lambda(lambda x: x / 255.0 - 0.5, input_shape=(160, 320, 3))) #normalize the data and give it a mean of 0
 # Crop the data
 model.add(Cropping2D(cropping=((70,25),(0,0))))
 # Nvidia model taken from: https://devblogs.nvidia.com/deep-learning-self-driving-cars/
@@ -131,6 +128,7 @@ model.add(SpatialDropout2D(0.2))
 model.add(Convolution2D(64, 3, 3, activation='relu'))
 model.add(Flatten())
 model.add(Dense(100))
+model.add(Dropout(.5))
 model.add(Dense(50))
 model.add(Dense(10))
 model.add(Dense(1))
