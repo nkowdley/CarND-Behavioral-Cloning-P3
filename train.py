@@ -89,7 +89,7 @@ model.add(Dense(1164))
 model.add(Dense(100))
 model.add(Dense(50))
 model.add(Dense(10))
-model.add(Dense(1)))
+model.add(Dense(1))
 # compile the model
 model.compile(loss='mae', optimizer='adam')
 
