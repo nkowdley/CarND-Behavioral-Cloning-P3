@@ -46,8 +46,8 @@ def generator(samples, batch_size = BATCH_SIZE):
                 right_image = mpimg.imread(path + get_filename(line[2]))
                 # Load the measurements associated with these images
                 measurement = float(line[3])
-                #left_measurement = measurement + CORRECTION_FACTOR
-                #right_measurement = measurement - CORRECTION_FACTOR
+                left_measurement = measurement + CORRECTION_FACTOR
+                right_measurement = measurement - CORRECTION_FACTOR
                 # capture the images for the center, left and right cameras
                 augmented_images.extend([center_image, left_image, right_image])
                 augmented_measurements.extend([measurement, left_measurement, right_measurement])
