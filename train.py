@@ -100,7 +100,7 @@ model.compile(loss='mae', optimizer='adam')
 print(len(train_samples))
 print(len(lines))
 model.fit_generator(train_generator, 
-    samples_per_epoch= int(np.ceil(len(train_samples)/BATCH_SIZE).astype( np.int32 ), 
+    samples_per_epoch= np.ceil(len(train_samples)/BATCH_SIZE).astype( np.int32 ), 
     validation_data=validation_generator, 
     nb_val_samples=np.ceil(len(validation_samples)/BATCH_SIZE).astype(np.int32), 
     nb_epoch=EPOCHS)
