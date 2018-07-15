@@ -51,7 +51,7 @@ def generator(samples, batch_size = BATCH_SIZE):
                 augmented_images.extend([center_image, left_image, right_image])
                 augmented_measurements.extend([measurement, left_measurement, right_measurement])
                 # and the flipped image, so we get twice the data for free
-                augmented_images.extend([np.fliplr(center_image), np.fliplr(left_image, 1), np.fliplr(right_image, 1)])
+                augmented_images.extend([np.fliplr(center_image), np.fliplr(left_image), np.fliplr(right_image)])
                 augmented_measurements.extend([measurement * -1.0, left_measurement * -1.0, right_measurement * -1.0] )
 
             # Put the data into numpy arrays so that keras can use it
