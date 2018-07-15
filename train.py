@@ -131,7 +131,7 @@ model.add(Dense(50))
 model.add(Dense(10))
 model.add(Dense(1))
 # compile the model
-model.compile(loss='mse', optimizer=Adam(lr = LEARNING_RATE))
+model.compile(loss='mae', optimizer=Adam(lr = LEARNING_RATE))
 
 # train the model
 #model.fit(X_train, y_train, validation_split=.2, shuffle=True, nb_epoch=EPOCHS)
