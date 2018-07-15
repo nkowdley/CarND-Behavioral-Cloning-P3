@@ -34,7 +34,6 @@ def generator(samples, batch_size = BATCH_SIZE):
     while 1: # Loop forever so the generator never terminates
         shuffle(samples)
         for offset in range(0, num_samples, batch_size):
-            lines_to_process = batch_size/4
             batch_samples = samples[offset:offset + batch_size]
 
             augmented_images, augmented_measurements = [],[]
@@ -52,8 +51,8 @@ def generator(samples, batch_size = BATCH_SIZE):
                 augmented_images.extend([center_image, left_image, right_image])
                 augmented_measurements.extend([measurement, left_measurement, right_measurement])
                 # and the flipped image, so we get twice the data for free
-                augmented_images.extend([np.copy(np.fliplr(center_image))])#, cv2.flip(left_image, 1), cv2.flip(right_image, 1)])
-                augmented_measurements.extend([measurement * -1.0])#, left_measurement * -1.0, right_measurement * -1.0] )
+                augmented_images.extend([np.fliplr(center_image), cv2.flip(left_image, 1), cv2.flip(right_image, 1)])
+                augmented_measurements.extend([measurement * -1.0, left_measurement * -1.0, right_measurement * -1.0] )
 
             # Put the data into numpy arrays so that keras can use it
             X_train = np.array(augmented_images)
@@ -85,7 +84,6 @@ model.add(Convolution2D(48, 5, 5, subsample=(2,2), activation='relu'))
 model.add(Convolution2D(64, 3, 3, activation='relu'))
 model.add(Convolution2D(64, 3, 3, activation='relu'))
 model.add(Flatten())
-model.add(Dense(1164))
 model.add(Dense(100))
 model.add(Dense(50))
 model.add(Dense(10))
@@ -98,9 +96,9 @@ model.compile(loss='mae', optimizer='adam')
 print(len(train_samples))
 print(len(lines))
 model.fit_generator(train_generator, 
-    samples_per_epoch= len(train_samples)*4, 
+    samples_per_epoch= len(train_samples)*6, 
     validation_data=validation_generator, 
-    nb_val_samples=len(validation_samples)*4, 
+    nb_val_samples=len(validation_samples)*6, 
     nb_epoch=EPOCHS)
 
 model.save('model.h5')
