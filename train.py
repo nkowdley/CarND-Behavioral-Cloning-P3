@@ -10,6 +10,7 @@ import matplotlib.image as mpimg
 import numpy as np
 from sklearn.utils import shuffle
 from sklearn.model_selection import train_test_split
+import keras
 from keras.models import Model, Sequential
 from keras.layers import Flatten, Dense, Lambda, Convolution2D, MaxPooling2D, Dropout, SpatialDropout2D
 from keras.layers.convolutional import Cropping2D
