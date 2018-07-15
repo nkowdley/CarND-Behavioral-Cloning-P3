@@ -17,7 +17,7 @@ import matplotlib.pyplot as plt
 
 # Globals for Training/Testing
 EPOCHS = 3
-CORRECTION_FACTOR = .2
+CORRECTION_FACTOR = .1
 BATCH_SIZE = 32 # This number must be divisible by 6, because I sample each line 6 times
 
 def get_filename(path):
@@ -51,7 +51,7 @@ def generator(samples, batch_size = BATCH_SIZE):
                 augmented_images.extend([center_image, left_image, right_image])
                 augmented_measurements.extend([measurement, left_measurement, right_measurement])
                 # and the flipped image, so we get twice the data for free
-                augmented_images.extend([np.fliplr(center_image)])#, cv2.flip(left_image, 1), cv2.flip(right_image, 1)])
+                augmented_images.extend([np.copy(np.fliplr(center_image))])#, cv2.flip(left_image, 1), cv2.flip(right_image, 1)])
                 augmented_measurements.extend([measurement * -1.0])#, left_measurement * -1.0, right_measurement * -1.0] )
 
             # Put the data into numpy arrays so that keras can use it
@@ -76,7 +76,7 @@ model = Sequential()
 #Normalize the data
 model.add(Lambda(lambda x: x / 255.0 - 0.5, input_shape=(160, 320, 3))) #normalize the data and give it a mean of 0
 # Crop the data
-model.add(Cropping2D(cropping=((70,25),(0,0))))
+model.add(Cropping2D(cropping=((50,25),(0,0))))
 # Nvidia model taken from: https://devblogs.nvidia.com/deep-learning-self-driving-cars/
 model.add(Convolution2D(24, 5, 5, border_mode='same', subsample=(2,2), activation='relu'))
 model.add(MaxPooling2D(pool_size=(2, 2), strides=(1, 1)))
