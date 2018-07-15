@@ -40,7 +40,7 @@ def left_steering(measurement):
         measurement = 1
     return measurement
 
-def right_steering(measurment):
+def right_steering(measurement):
     """
     a helper function to make sure we do not over correct
     """
@@ -54,15 +54,14 @@ def remove_straights(samples, drop_prob = STRAIGHT_KEEP_PROB, threshold = STRAIG
     a helper function to remove a percentage(keep_prob) of the samples that have a steering near 0
     This is to prevent overfitting of straights
     """
-    clean_samples = samples.copy()
     i = 1
     while i < len(samples):
         measurement = samples[i][3]
         if abs(float(measurement)) < threshold:
             if np.random.rand() < drop_prob:
-                del clean_samples[i]
-            i += 1
-    return clean_samples
+                del samples[i]
+        i += 1
+    return samples
 
 def generator(samples, batch_size = BATCH_SIZE):
     """
