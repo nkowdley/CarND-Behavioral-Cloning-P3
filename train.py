@@ -45,8 +45,8 @@ def generator(samples, batch_size = BATCH_SIZE):
                 right_image = mpimg.imread(path + get_filename(line[2]))
                 # Load the measurements associated with these images
                 measurement = float(line[3])
-                left_measurement = measurement + CORRECTION_FACTOR
-                right_measurement = measurement - CORRECTION_FACTOR
+                #left_measurement = measurement + CORRECTION_FACTOR
+                #right_measurement = measurement - CORRECTION_FACTOR
                 # capture the images for the center, left and right cameras
                 augmented_images.extend([center_image, left_image, right_image])
                 augmented_measurements.extend([measurement, left_measurement, right_measurement])
@@ -78,22 +78,23 @@ model.add(Lambda(lambda x: x / 255.0 - 0.5, input_shape=(160, 320, 3))) #normali
 # Crop the data
 model.add(Cropping2D(cropping=((50,25),(0,0))))
 # Nvidia model taken from: https://devblogs.nvidia.com/deep-learning-self-driving-cars/
-model.add(Convolution2D(24, 5, 5, border_mode='same', subsample=(2,2), activation='relu'))
+model.add(Convolution2D(24, 5, 5, subsample=(2,2), activation='relu'))
 #model.add(MaxPooling2D(pool_size=(2, 2), strides=(1, 1)))
-model.add(Convolution2D(36, 5, 5, border_mode='same', subsample=(2,2), activation='relu'))
+model.add(Convolution2D(36, 5, 5, subsample=(2,2), activation='relu'))
 #model.add(MaxPooling2D(pool_size=(2, 2), strides=(1, 1)))
-model.add(Convolution2D(48, 5, 5,border_mode='same', subsample=(2,2), activation='relu'))
+model.add(Convolution2D(48, 5, 5, subsample=(2,2), activation='relu'))
 #model.add(MaxPooling2D(pool_size=(2, 2), strides=(1, 1)))
-model.add(Convolution2D(64, 3, 3, border_mode='same', activation='relu'))
+model.add(Convolution2D(64, 3, 3, activation='relu'))
 model.add(Convolution2D(64, 3, 3, activation='relu'))
 model.add(Flatten())
 model.add(Dense(100))
-model.add(Dropout(0.4))
+model.add(Dropout(0.5))
 model.add(Dense(50))
+model.add(Dropout(0.5))
 model.add(Dense(10))
 model.add(Dense(1))
 # compile the model
-model.compile(loss='mae', optimizer='adam')
+model.compile(loss='mae', optimizer=Adam(lr=0.0001))
 
 # train the model
 #model.fit(X_train, y_train, validation_split=.2, shuffle=True, nb_epoch=EPOCHS)
