@@ -116,7 +116,7 @@ validation_generator = generator(validation_samples, batch_size = BATCH_SIZE)
 #Instantiate the model
 model = Sequential()
 #Normalize the data
-model.add(Lambda(lambda x: K.tf.image.resize_images(x, (80, 160)), input_shape=(160, 320, 3)))
+model.add(Lambda(lambda x: keras.tf.image.resize_images(x, (80, 160)), input_shape=(160, 320, 3)))
 model.add(Lambda(lambda x:  x / 127.5 - 1.)) #normalize the data and give it a mean of 0
 # Crop the data
 model.add(Cropping2D(cropping=((70,25),(0,0))))
