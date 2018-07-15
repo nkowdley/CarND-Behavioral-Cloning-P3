@@ -36,7 +36,7 @@ def left_steering(measurement):
     """
     a helper function to make sure we do not over correct
     """
-    measurement = measurement + CORRECTION_FACTOR
+    measurement = (measurement + CORRECTION_FACTOR) * 1.7
     if measurement > 1:
         measurement = 1
     return measurement
@@ -45,7 +45,7 @@ def right_steering(measurement):
     """
     a helper function to make sure we do not over correct
     """
-    measurement = measurement - CORRECTION_FACTOR
+    measurement = (measurement - CORRECTION_FACTOR) * 1.7
     if measurement < -1:
         measurement = -1
     return measurement
