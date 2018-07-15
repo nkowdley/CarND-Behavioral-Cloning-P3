@@ -17,7 +17,7 @@ from keras.optimizers import Adam
 import matplotlib.pyplot as plt
 
 # Globals for Training/Testing
-EPOCHS = 10
+EPOCHS = 2
 CORRECTION_FACTOR = .1
 BATCH_SIZE = 32 # This number must be divisible by 6, because I sample each line 6 times
 
