@@ -17,8 +17,8 @@ from keras.optimizers import Adam
 import matplotlib.pyplot as plt
 
 # Globals for Training/Testing
-EPOCHS = 2
-CORRECTION_FACTOR = .1
+EPOCHS = 5
+CORRECTION_FACTOR = .2
 BATCH_SIZE = 32 # This number must be divisible by 6, because I sample each line 6 times
 
 def get_filename(path):
@@ -85,6 +85,7 @@ model.add(Convolution2D(64, 3, 3, activation='relu'))
 model.add(Convolution2D(64, 3, 3, activation='relu'))
 model.add(Flatten())
 model.add(Dense(100))
+model.add(Dropout(0.5))
 model.add(Dense(50))
 model.add(Dense(10))
 model.add(Dense(1))
