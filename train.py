@@ -18,7 +18,7 @@ import matplotlib.pyplot as plt
 # Globals for Training/Testing
 EPOCHS = 3
 CORRECTION_FACTOR = .2
-BATCH_SIZE = 64 # This number must be divisible by 6, because I sample each line 6 times
+BATCH_SIZE = 32 # This number must be divisible by 6, because I sample each line 6 times
 
 def get_filename(path):
     """
@@ -79,16 +79,16 @@ model.add(Lambda(lambda x: x / 255.0 - 0.5, input_shape=(160, 320, 3))) #normali
 model.add(Cropping2D(cropping=((70,25),(0,0))))
 # Nvidia model taken from: https://devblogs.nvidia.com/deep-learning-self-driving-cars/
 model.add(Convolution2D(24, 5, 5, border_mode='same', subsample=(2,2), activation='relu'))
-model.add(MaxPooling2D(pool_size=(2, 2), strides=(1, 1)))
+#model.add(MaxPooling2D(pool_size=(2, 2), strides=(1, 1)))
 model.add(Convolution2D(36, 5, 5, border_mode='same', subsample=(2,2), activation='relu'))
-model.add(MaxPooling2D(pool_size=(2, 2), strides=(1, 1)))
+#model.add(MaxPooling2D(pool_size=(2, 2), strides=(1, 1)))
 model.add(Convolution2D(48, 5, 5,border_mode='same', subsample=(2,2), activation='relu'))
-model.add(MaxPooling2D(pool_size=(2, 2), strides=(1, 1)))
+#model.add(MaxPooling2D(pool_size=(2, 2), strides=(1, 1)))
 model.add(Convolution2D(64, 3, 3, border_mode='same', activation='relu'))
 model.add(Convolution2D(64, 3, 3, activation='relu'))
 model.add(Flatten())
 model.add(Dense(100))
-model.add(Dropout(0.2))
+model.add(Dropout(0.4))
 model.add(Dense(50))
 model.add(Dense(10))
 model.add(Dense(1))
