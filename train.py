@@ -17,7 +17,7 @@ import matplotlib.pyplot as plt
 # Globals for Training/Testing
 EPOCHS = 3
 CORRECTION_FACTOR = .2
-BATCH_SIZE = 64 # This number must be divisible by 6, because I sample each line 6 times
+BATCH_SIZE = 60 # This number must be divisible by 6, because I sample each line 6 times
 
 def get_filename(path):
     """
@@ -40,18 +40,18 @@ def generator(samples, batch_size = BATCH_SIZE):
                 # Load the images
                 path = './data/IMG/' # The current path of where the data is located
                 center_image = cv2.imread(path + get_filename(line[0]))
-                #left_image = cv2.imread(path + get_filename(line[1]))
-                #right_image = cv2.imread(path + get_filename(line[2]))
+                left_image = cv2.imread(path + get_filename(line[1]))
+                right_image = cv2.imread(path + get_filename(line[2]))
                 # Load the measurements associated with these images
                 measurement = float(line[3])
-                #left_measurement = measurement + CORRECTION_FACTOR
-                #right_measurement = measurement - CORRECTION_FACTOR
+                left_measurement = measurement + CORRECTION_FACTOR
+                right_measurement = measurement - CORRECTION_FACTOR
                 # capture the images for the center, left and right cameras
-                augmented_images.extend([center_image])#, left_image, right_image])
-                augmented_measurements.extend([measurement])#, left_measurement, right_measurement])
+                augmented_images.extend([center_image, left_image, right_image])
+                augmented_measurements.extend([measurement, left_measurement, right_measurement])
                 # and the flipped image, so we get twice the data for free
-                augmented_images.extend([cv2.flip(center_image, 1)])#, cv2.flip(left_image, 1), cv2.flip(right_image, 1)])
-                augmented_measurements.extend([measurement * -1.0])#, left_measurement * -1.0, right_measurement * -1.0] )
+                augmented_images.extend([cv2.flip(center_image, 1), cv2.flip(left_image, 1), cv2.flip(right_image, 1)])
+                augmented_measurements.extend([measurement * -1.0, left_measurement * -1.0, right_measurement * -1.0] )
 
             # Put the data into numpy arrays so that keras can use it
             X_train = np.array(augmented_images)
@@ -95,11 +95,11 @@ model.compile(loss='mse', optimizer='adam')
 print(len(train_samples))
 print(len(lines))
 model.fit_generator(train_generator, 
-    samples_per_epoch= len(train_samples)*2, 
+    samples_per_epoch= len(train_samples)*6, 
     validation_data=validation_generator, 
-    nb_val_samples=len(validation_samples)*2, 
+    nb_val_samples=len(validation_samples)*6, 
     nb_epoch=EPOCHS)
-    
+
 model.save('model.h5')
 # print the keys contained in the history object
 #print(history_object.history.keys())
