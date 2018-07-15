@@ -34,7 +34,7 @@ def generator(samples, batch_size = BATCH_SIZE):
         shuffle(samples)
         for offset in range(0, num_samples, batch_size):
             lines_to_process = batch_size/4
-            batch_samples = samples[offset:offset+ batch\]
+            batch_samples = samples[offset:offset + batch_size]
 
             augmented_images, augmented_measurements = [],[]
             for batch_sample in batch_samples:
