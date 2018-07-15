@@ -12,7 +12,7 @@ from sklearn.utils import shuffle
 from sklearn.model_selection import train_test_split
 from keras.models import Model, Sequential
 from keras.layers import Flatten, Dense, Lambda, Convolution2D, MaxPooling2D, Dropout
-from keras.layers.convolutional import Cropping2D
+from keras.layers.convolutional import Cropping2D, SpatialDropout2D
 from keras.optimizers import Adam
 import matplotlib.pyplot as plt
 from pprint import pprint
@@ -134,7 +134,7 @@ model.add(Dense(50))
 model.add(Dense(10))
 model.add(Dense(1))
 # compile the model
-model.compile(loss='mae', optimizer=Adam(lr = LEARNING_RATE))
+model.compile(loss='mse', optimizer=Adam(lr = LEARNING_RATE))
 
 # train the model
 #model.fit(X_train, y_train, validation_split=.2, shuffle=True, nb_epoch=EPOCHS)
