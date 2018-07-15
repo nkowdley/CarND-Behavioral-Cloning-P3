@@ -10,7 +10,7 @@ import matplotlib.image as mpimg
 import numpy as np
 from sklearn.utils import shuffle
 from sklearn.model_selection import train_test_split
-import keras
+from keras import backend as K
 from keras.models import Model, Sequential
 from keras.layers import Flatten, Dense, Lambda, Convolution2D, MaxPooling2D, Dropout, SpatialDropout2D
 from keras.layers.convolutional import Cropping2D
@@ -117,7 +117,7 @@ validation_generator = generator(validation_samples, batch_size = BATCH_SIZE)
 #Instantiate the model
 model = Sequential()
 #Normalize the data
-model.add(Lambda(lambda x: keras.tf.image.resize_images(x, (80, 160)), input_shape=(160, 320, 3)))
+model.add(Lambda(lambda x: K.tf.image.resize_images(x, (80, 160)), input_shape=(160, 320, 3)))
 model.add(Lambda(lambda x:  x / 127.5 - 1.)) #normalize the data and give it a mean of 0
 # Crop the data
 model.add(Cropping2D(cropping=((70,25),(0,0))))
