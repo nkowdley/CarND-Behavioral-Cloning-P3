@@ -17,8 +17,8 @@ from keras.optimizers import Adam
 import matplotlib.pyplot as plt
 
 # Globals for Training/Testing
-EPOCHS = 5
-CORRECTION_FACTOR = .2
+EPOCHS = 1
+CORRECTION_FACTOR = .1
 BATCH_SIZE = 32 # This number must be divisible by 6, because I sample each line 6 times
 
 def get_filename(path):
@@ -85,13 +85,13 @@ model.add(Convolution2D(64, 3, 3, activation='relu'))
 model.add(Convolution2D(64, 3, 3, activation='relu'))
 model.add(Flatten())
 model.add(Dense(100))
-model.add(Dropout(0.2))
+model.add(Dropout(0.1))
 model.add(Dense(50))
-model.add(Dropout(0.2))
+model.add(Dropout(0.1))
 model.add(Dense(10))
 model.add(Dense(1))
 # compile the model
-model.compile(loss='mae', optimizer='adam')
+model.compile(loss='mse', optimizer='adam')
 
 # train the model
 #model.fit(X_train, y_train, validation_split=.2, shuffle=True, nb_epoch=EPOCHS)
