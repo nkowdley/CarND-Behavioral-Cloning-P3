@@ -15,11 +15,14 @@ from keras.layers import Flatten, Dense, Lambda, Convolution2D, MaxPooling2D, Dr
 from keras.layers.convolutional import Cropping2D
 from keras.optimizers import Adam
 import matplotlib.pyplot as plt
+from pprint import pprint
 
-# Globals for Training/Testing
+# Globals and Hyperparameters for Training/Testing
 EPOCHS = 1
 CORRECTION_FACTOR = .1
 BATCH_SIZE = 32 # This number must be divisible by 6, because I sample each line 6 times
+STRAIGHT_KEEP_PROB = .85
+STRAIGHT_THRESHOLD = .05
 
 def get_filename(path):
     """
@@ -28,8 +31,43 @@ def get_filename(path):
     and returns the last element of the result
     """
     return path.split('/')[-1]
+def left_steering(measurement):
+    """
+    a helper function to make sure we do not over correct
+    """
+    measurement = measurement + CORRECTION_FACTOR
+    if measurement > 1:
+        measurement = 1
+    return measurement
+
+def right_steering(measurment):
+    """
+    a helper function to make sure we do not over correct
+    """
+    measurement = measurement - CORRECTION_FACTOR
+    if measurement < -1:
+        measurement = -1
+    return measurement
+
+def remove_straights(samples, drop_prob = STRAIGHT_KEEP_PROB, threshold = STRAIGHT_THRESHOLD):
+    """
+    a helper function to remove a percentage(keep_prob) of the samples that have a steering near 0
+    This is to prevent overfitting of straights
+    """
+    clean_samples = samples.copy()
+    i = 1
+    while i < len(samples):
+        measurement = samples[i][3]
+        if abs(float(measurement)) < threshold:
+            if np.random.rand() < drop_prob:
+                del clean_samples[i]
+            i += 1
+    return clean_samples
 
 def generator(samples, batch_size = BATCH_SIZE):
+    """
+    a generator to help efficiently allocate memory
+    """
     num_samples = len(samples)
     while 1: # Loop forever so the generator never terminates
         shuffle(samples)
@@ -45,14 +83,14 @@ def generator(samples, batch_size = BATCH_SIZE):
                 right_image = mpimg.imread(path + get_filename(line[2]))
                 # Load the measurements associated with these images
                 measurement = float(line[3])
-                #left_measurement = measurement + CORRECTION_FACTOR
-                #right_measurement = measurement - CORRECTION_FACTOR
+                left_measurement = left_steering(measurement)
+                right_measurement = right_steering(measurement)
                 # capture the images for the center, left and right cameras
-                augmented_images.extend([center_image])#, left_image, right_image])
-                augmented_measurements.extend([measurement])#, left_measurement, right_measurement])
+                augmented_images.extend([center_image, left_image, right_image])
+                augmented_measurements.extend([measurement, left_measurement, right_measurement])
                 # and the flipped image, so we get twice the data for free
-                #augmented_images.extend([np.fliplr(center_image), np.fliplr(left_image), np.fliplr(right_image)])
-                #augmented_measurements.extend([measurement * -1.0, left_measurement * -1.0, right_measurement * -1.0] )
+                augmented_images.extend([np.fliplr(center_image), np.fliplr(left_image), np.fliplr(right_image)])
+                augmented_measurements.extend([measurement * -1.0, left_measurement * -1.0, right_measurement * -1.0] )
 
             # Put the data into numpy arrays so that keras can use it
             X_train = np.array(augmented_images)
@@ -65,6 +103,9 @@ with open('./data/driving_log.csv') as csvfile:
     reader = csv.reader(csvfile)
     for line in reader:
         lines.append(line)
+
+# Strip out some of the data
+remove_straights(lines)
 
 train_samples, validation_samples = train_test_split(lines, test_size = 0.2)
 
