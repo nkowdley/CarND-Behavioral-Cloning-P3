@@ -45,14 +45,14 @@ def generator(samples, batch_size = BATCH_SIZE):
                 right_image = mpimg.imread(path + get_filename(line[2]))
                 # Load the measurements associated with these images
                 measurement = float(line[3])
-                left_measurement = measurement + CORRECTION_FACTOR
-                right_measurement = measurement - CORRECTION_FACTOR
+                #left_measurement = measurement + CORRECTION_FACTOR
+                #right_measurement = measurement - CORRECTION_FACTOR
                 # capture the images for the center, left and right cameras
-                augmented_images.extend([center_image, left_image, right_image])
-                augmented_measurements.extend([measurement, left_measurement, right_measurement])
+                augmented_images.extend([center_image])#, left_image, right_image])
+                augmented_measurements.extend([measurement])#, left_measurement, right_measurement])
                 # and the flipped image, so we get twice the data for free
-                augmented_images.extend([np.fliplr(center_image), np.fliplr(left_image), np.fliplr(right_image)])
-                augmented_measurements.extend([measurement * -1.0, left_measurement * -1.0, right_measurement * -1.0] )
+                #augmented_images.extend([np.fliplr(center_image), np.fliplr(left_image), np.fliplr(right_image)])
+                #augmented_measurements.extend([measurement * -1.0, left_measurement * -1.0, right_measurement * -1.0] )
 
             # Put the data into numpy arrays so that keras can use it
             X_train = np.array(augmented_images)
