@@ -15,9 +15,9 @@ from keras.layers.convolutional import Cropping2D
 import matplotlib.pyplot as plt
 
 # Globals for Training/Testing
-EPOCHS = 5
+EPOCHS = 3
 CORRECTION_FACTOR = .2
-BATCH_SIZE = 60 # This number must be divisible by 6, because I sample each line 6 times
+BATCH_SIZE = 64 # This number must be divisible by 6, because I sample each line 6 times
 
 def get_filename(path):
     """
@@ -32,7 +32,8 @@ def generator(samples, batch_size = BATCH_SIZE):
     while 1: # Loop forever so the generator never terminates
         shuffle(samples)
         for offset in range(0, num_samples, batch_size):
-            lines_to_process = batch_size/6
+            lines_to_process = batch_size/4
+            print("Lines to process:" + str(lines_to_process))
             batch_samples = samples[offset:offset+ int(lines_to_process)]
 
             augmented_images, augmented_measurements = [],[]
@@ -40,23 +41,23 @@ def generator(samples, batch_size = BATCH_SIZE):
                 # Load the images
                 path = './data/IMG/' # The current path of where the data is located
                 center_image = cv2.imread(path + get_filename(line[0]))
-                left_image = cv2.imread(path + get_filename(line[1]))
-                right_image = cv2.imread(path + get_filename(line[2]))
+                #left_image = cv2.imread(path + get_filename(line[1]))
+                #right_image = cv2.imread(path + get_filename(line[2]))
                 # Load the measurements associated with these images
                 measurement = float(line[3])
-                left_measurement = measurement + CORRECTION_FACTOR
-                right_measurement = measurement - CORRECTION_FACTOR
+                #left_measurement = measurement + CORRECTION_FACTOR
+                #right_measurement = measurement - CORRECTION_FACTOR
                 # capture the images for the center, left and right cameras
-                augmented_images.extend([center_image, left_image, right_image])
-                augmented_measurements.extend([measurement, left_measurement, right_measurement])
+                augmented_images.extend([center_image])#, left_image, right_image])
+                augmented_measurements.extend([measurement])#, left_measurement, right_measurement])
                 # and the flipped image, so we get twice the data for free
-                augmented_images.extend([cv2.flip(center_image, 1), cv2.flip(left_image, 1), cv2.flip(right_image, 1)])
-                augmented_measurements.extend([measurement * -1.0, left_measurement * -1.0, right_measurement * -1.0] )
+                augmented_images.extend([cv2.flip(center_image, 1)])#, cv2.flip(left_image, 1), cv2.flip(right_image, 1)])
+                augmented_measurements.extend([measurement * -1.0])#, left_measurement * -1.0, right_measurement * -1.0] )
 
             # Put the data into numpy arrays so that keras can use it
             X_train = np.array(augmented_images)
             y_train = np.array(augmented_measurements)
-            yield shuffle(X_train, y_train)
+            yield X_train, y_train
 
 
 lines = []
@@ -92,7 +93,8 @@ model.compile(loss='mse', optimizer='adam')
 
 # train the model
 #model.fit(X_train, y_train, validation_split=.2, shuffle=True, nb_epoch=EPOCHS)
-
+print(len(train_samples)
+print(len(lines))
 model.fit_generator(train_generator, samples_per_epoch= len(train_samples)*6, validation_data=validation_generator, nb_val_samples=len(validation_samples), nb_epoch=EPOCHS)
 model.save('model.h5')
 # print the keys contained in the history object
