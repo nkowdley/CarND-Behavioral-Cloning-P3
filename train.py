@@ -6,18 +6,19 @@ This script does data ingestion and training
 
 import csv
 import cv2
+import matplotlib.image as mpimg
 import numpy as np
 from sklearn.utils import shuffle
 from sklearn.model_selection import train_test_split
 from keras.models import Model, Sequential
-from keras.layers import Flatten, Dense, Lambda, Convolution2D, MaxPooling2D
+from keras.layers import Flatten, Dense, Lambda, Convolution2D, MaxPooling2D, Dropout
 from keras.layers.convolutional import Cropping2D
 import matplotlib.pyplot as plt
 
 # Globals for Training/Testing
 EPOCHS = 3
 CORRECTION_FACTOR = .2
-BATCH_SIZE = 60 # This number must be divisible by 6, because I sample each line 6 times
+BATCH_SIZE = 64 # This number must be divisible by 6, because I sample each line 6 times
 
 def get_filename(path):
     """
@@ -39,9 +40,9 @@ def generator(samples, batch_size = BATCH_SIZE):
             for batch_sample in batch_samples:
                 # Load the images
                 path = './data/IMG/' # The current path of where the data is located
-                center_image = cv2.imread(path + get_filename(line[0]))
-                left_image = cv2.imread(path + get_filename(line[1]))
-                right_image = cv2.imread(path + get_filename(line[2]))
+                center_image = mpimg.imread(path + get_filename(line[0]))
+                left_image = mpimg.imread(path + get_filename(line[1]))
+                right_image = mpimg.imread(path + get_filename(line[2]))
                 # Load the measurements associated with these images
                 measurement = float(line[3])
                 left_measurement = measurement + CORRECTION_FACTOR
@@ -50,13 +51,13 @@ def generator(samples, batch_size = BATCH_SIZE):
                 augmented_images.extend([center_image, left_image, right_image])
                 augmented_measurements.extend([measurement, left_measurement, right_measurement])
                 # and the flipped image, so we get twice the data for free
-                augmented_images.extend([cv2.flip(center_image, 1), cv2.flip(left_image, 1), cv2.flip(right_image, 1)])
-                augmented_measurements.extend([measurement * -1.0, left_measurement * -1.0, right_measurement * -1.0] )
+                augmented_images.extend([np.fliplr(center_image)])#, cv2.flip(left_image, 1), cv2.flip(right_image, 1)])
+                augmented_measurements.extend([measurement * -1.0])#, left_measurement * -1.0, right_measurement * -1.0] )
 
             # Put the data into numpy arrays so that keras can use it
             X_train = np.array(augmented_images)
             y_train = np.array(augmented_measurements)
-            yield X_train, y_train
+            yield shuffle( X_train, y_train )
 
 
 lines = []
@@ -87,6 +88,7 @@ model.add(Convolution2D(64, 3, 3, border_mode='same', activation='relu'))
 model.add(Convolution2D(64, 3, 3, activation='relu'))
 model.add(Flatten())
 model.add(Dense(100))
+model.add(Dropout(0.2))
 model.add(Dense(50))
 model.add(Dense(10))
 model.add(Dense(1))
@@ -98,9 +100,9 @@ model.compile(loss='mse', optimizer='adam')
 print(len(train_samples))
 print(len(lines))
 model.fit_generator(train_generator, 
-    samples_per_epoch= len(train_samples)*6, 
+    samples_per_epoch= len(train_samples)*4, 
     validation_data=validation_generator, 
-    nb_val_samples=len(validation_samples)*6, 
+    nb_val_samples=len(validation_samples)*4, 
     nb_epoch=EPOCHS)
 
 model.save('model.h5')
