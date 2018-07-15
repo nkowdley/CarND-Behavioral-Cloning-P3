@@ -17,7 +17,7 @@ import matplotlib.pyplot as plt
 # Globals for Training/Testing
 EPOCHS = 5
 CORRECTION_FACTOR = .2
-BATCH_SIZE = 32 # This number must be divisible by 6, because I sample each line 6 times
+BATCH_SIZE = 60 # This number must be divisible by 6, because I sample each line 6 times
 
 def get_filename(path):
     """
@@ -93,7 +93,7 @@ model.compile(loss='mse', optimizer='adam')
 # train the model
 #model.fit(X_train, y_train, validation_split=.2, shuffle=True, nb_epoch=EPOCHS)
 
-model.fit_generator(train_generator, samples_per_epoch= len(train_samples), validation_data=validation_generator, nb_val_samples=len(validation_samples), nb_epoch=EPOCHS)
+model.fit_generator(train_generator, samples_per_epoch= len(train_samples)*6, validation_data=validation_generator, nb_val_samples=len(validation_samples), nb_epoch=EPOCHS)
 model.save('model.h5')
 # print the keys contained in the history object
 #print(history_object.history.keys())
