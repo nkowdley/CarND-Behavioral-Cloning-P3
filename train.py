@@ -13,6 +13,7 @@ from sklearn.model_selection import train_test_split
 from keras.models import Model, Sequential
 from keras.layers import Flatten, Dense, Lambda, Convolution2D, MaxPooling2D, Dropout
 from keras.layers.convolutional import Cropping2D
+from keras.optimizers import Adam
 import matplotlib.pyplot as plt
 
 # Globals for Training/Testing
@@ -78,19 +79,18 @@ model.add(Lambda(lambda x: x / 255.0 - 0.5, input_shape=(160, 320, 3))) #normali
 # Crop the data
 model.add(Cropping2D(cropping=((50,25),(0,0))))
 # Nvidia model taken from: https://devblogs.nvidia.com/deep-learning-self-driving-cars/
-model.add(Convolution2D(24, 5, 5, subsample=(2,2), activation='relu'))
-#model.add(MaxPooling2D(pool_size=(2, 2), strides=(1, 1)))
-model.add(Convolution2D(36, 5, 5, subsample=(2,2), activation='relu'))
-#model.add(MaxPooling2D(pool_size=(2, 2), strides=(1, 1)))
-model.add(Convolution2D(48, 5, 5, subsample=(2,2), activation='relu'))
-#model.add(MaxPooling2D(pool_size=(2, 2), strides=(1, 1)))
-model.add(Convolution2D(64, 3, 3, activation='relu'))
-model.add(Convolution2D(64, 3, 3, activation='relu'))
+model.add(Convolution2D(24, 5, 5, subsample=(2,2), border_mode='same', activation='relu'))
+model.add(MaxPooling2D(pool_size=(2, 2), strides=(1, 1)))
+model.add(Convolution2D(36, 5, 5, subsample=(2,2),  border_mode='same', activation='relu'))
+model.add(MaxPooling2D(pool_size=(2, 2), strides=(1, 1)))
+model.add(Convolution2D(48, 5, 5, subsample=(2,2),  border_mode='same', activation='relu'))
+model.add(MaxPooling2D(pool_size=(2, 2), strides=(1, 1)))
+model.add(Convolution2D(64, 3, 3,  border_mode='same', activation='relu'))
+model.add(Convolution2D(64, 3, 3,  border_mode='same', activation='relu'))
 model.add(Flatten())
 model.add(Dense(100))
 model.add(Dropout(0.5))
 model.add(Dense(50))
-model.add(Dropout(0.5))
 model.add(Dense(10))
 model.add(Dense(1))
 # compile the model
