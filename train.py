@@ -94,7 +94,12 @@ model.compile(loss='mse', optimizer='adam')
 #model.fit(X_train, y_train, validation_split=.2, shuffle=True, nb_epoch=EPOCHS)
 print(len(train_samples))
 print(len(lines))
-model.fit_generator(train_generator, samples_per_epoch= len(train_samples)*4, validation_data=validation_generator, nb_val_samples=len(validation_samples)*4, nb_epoch=EPOCHS)
+model.fit_generator(train_generator, 
+    samples_per_epoch= len(train_samples)*2, 
+    validation_data=validation_generator, 
+    nb_val_samples=len(validation_samples)*2, 
+    nb_epoch=EPOCHS)
+    
 model.save('model.h5')
 # print the keys contained in the history object
 #print(history_object.history.keys())
