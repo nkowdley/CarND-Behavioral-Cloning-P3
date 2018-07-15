@@ -89,9 +89,10 @@ model.add(Dense(100))
 model.add(Dropout(0.5)) 
 model.add(Dense(50))
 model.add(Dense(10))
+model.add(Dropout(0.5))
 model.add(Dense(1))
 # compile the model
-model.compile(loss='mae', optimizer=Adam(lr=0.0001))
+model.compile(loss='mae', optimizer='adam')
 
 # train the model
 #model.fit(X_train, y_train, validation_split=.2, shuffle=True, nb_epoch=EPOCHS)
