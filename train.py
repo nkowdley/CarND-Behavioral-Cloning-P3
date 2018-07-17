@@ -61,6 +61,7 @@ def remove_straights(samples, drop_prob = STRAIGHT_KEEP_PROB, threshold = STRAIG
         if abs(float(measurement)) < threshold:
             if np.random.rand() < drop_prob:
                 del samples[i]
+                if -= 1
         i += 1
     return samples
 
