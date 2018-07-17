@@ -18,7 +18,7 @@ import matplotlib.pyplot as plt
 from pprint import pprint
 
 # Globals and Hyperparameters for Training/Testing
-EPOCHS = 5
+EPOCHS = 2
 CORRECTION_FACTOR = .3
 BATCH_SIZE = 128 # This number must be divisible by 6, because I sample each line 6 times
 STRAIGHT_KEEP_PROB = .8
@@ -61,7 +61,7 @@ def remove_straights(samples, drop_prob = STRAIGHT_KEEP_PROB, threshold = STRAIG
         if abs(float(measurement)) < threshold:
             if np.random.rand() < drop_prob:
                 del samples[i]
-                if -= 1
+                i -= 1
         i += 1
     return samples
 
