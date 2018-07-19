@@ -19,7 +19,7 @@ from pprint import pprint
 
 # Globals and Hyperparameters for Training/Testing
 EPOCHS = 5
-CORRECTION_FACTOR = .3
+CORRECTION_FACTOR = .05
 BATCH_SIZE = 128 
 STRAIGHT_KEEP_PROB = .8
 STRAIGHT_THRESHOLD = .1
@@ -82,8 +82,8 @@ def generator(samples, batch_size = BATCH_SIZE):
             augmented_images, augmented_measurements = [],[]
             for batch_sample in batch_samples:
                 # Load the images
-                #path = './data/data/data/IMG/' # The current path of where the data is located
-                path = './edata/IMG/'
+                path = './data/IMG/' # The current path of where the data is located
+                #path = './edata/IMG/'
                 center_image = mpimg.imread(path + get_filename(line[0]))
                 left_image = mpimg.imread(path + get_filename(line[1]))
                 right_image = mpimg.imread(path + get_filename(line[2]))
@@ -109,8 +109,8 @@ def generator(samples, batch_size = BATCH_SIZE):
 
 
 lines = []
-#with open('./data/data/data/driving_log.csv') as csvfile:
-with open('./edata/driving_log.csv') as csvfile:
+with open('./data/driving_log.csv') as csvfile:
+#with open('./edata/driving_log.csv') as csvfile:
     reader = csv.reader(csvfile)
     for line in reader:
         lines.append(line)
@@ -139,13 +139,14 @@ model.add(Convolution2D(48, 5, 5, subsample=(2,2), activation='relu'))
 model.add(Convolution2D(64, 3, 3, activation='relu'))
 model.add(Convolution2D(64, 3, 3, activation='relu'))
 model.add(Flatten())
-model.add(Dense(100))
+model.add(Dense(1164, activation='relu'))
+model.add(Dense(100, activation='relu'))
 #model.add(Dropout(.5))
-model.add(Dense(50))
-model.add(Dense(10))
-model.add(Dense(1))
+model.add(Dense(50, activation='relu'))
+model.add(Dense(10, activation='relu'))
+model.add(Dense(1, activation='relu'))
 # compile the model
-model.compile(loss='mse', optimizer=Adam(lr = LEARNING_RATE))
+model.compile(loss='mae', optimizer=Adam(lr = LEARNING_RATE))
 
 # train the model
 #model.fit(X_train, y_train, validation_split=.2, shuffle=True, nb_epoch=EPOCHS)
