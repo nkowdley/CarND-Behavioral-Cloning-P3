@@ -18,9 +18,9 @@ import matplotlib.pyplot as plt
 from pprint import pprint
 
 # Globals and Hyperparameters for Training/Testing
-EPOCHS = 2
+EPOCHS = 5
 CORRECTION_FACTOR = .3
-BATCH_SIZE = 128 # This number must be divisible by 6, because I sample each line 6 times
+BATCH_SIZE = 128 
 STRAIGHT_KEEP_PROB = .8
 STRAIGHT_THRESHOLD = .1
 LEARNING_RATE = 0.001
@@ -36,18 +36,22 @@ def left_steering(measurement):
     """
     a helper function to make sure we do not over correct
     """
-    measurement = (measurement + CORRECTION_FACTOR) * 1.7
+    measurement = (measurement + CORRECTION_FACTOR)
     if measurement > 1:
         measurement = 1
+    if measurement < -1:
+        measurement = -1
     return measurement
 
 def right_steering(measurement):
     """
     a helper function to make sure we do not over correct
     """
-    measurement = (measurement - CORRECTION_FACTOR) * 1.7
+    measurement = (measurement - CORRECTION_FACTOR)
     if measurement < -1:
         measurement = -1
+    if measurement > 1:
+        measurement = 1
     return measurement
 
 def remove_straights(samples, drop_prob = STRAIGHT_KEEP_PROB, threshold = STRAIGHT_THRESHOLD):
@@ -78,7 +82,8 @@ def generator(samples, batch_size = BATCH_SIZE):
             augmented_images, augmented_measurements = [],[]
             for batch_sample in batch_samples:
                 # Load the images
-                path = './data/IMG/' # The current path of where the data is located
+                #path = './data/data/data/IMG/' # The current path of where the data is located
+                path = './edata/IMG/'
                 center_image = mpimg.imread(path + get_filename(line[0]))
                 left_image = mpimg.imread(path + get_filename(line[1]))
                 right_image = mpimg.imread(path + get_filename(line[2]))
@@ -91,7 +96,11 @@ def generator(samples, batch_size = BATCH_SIZE):
                 augmented_measurements.extend([measurement, left_measurement, right_measurement])
                 # and the flipped image, so we get twice the data for free
                 augmented_images.extend([np.fliplr(center_image), np.fliplr(left_image), np.fliplr(right_image)])
-                augmented_measurements.extend([measurement * -1.0, left_measurement * -1.0, right_measurement * -1.0] )
+                # note that flipped images turn the opposite direction, so recalculate measurements
+                measurement = measurement * -1.0
+                left_measurement = right_steering(measurement)
+                right_measurement = left_steering(measurement)
+                augmented_measurements.extend([measurement, left_measurement, right_measurement] )
 
             # Put the data into numpy arrays so that keras can use it
             X_train = np.array(augmented_images)
@@ -100,7 +109,8 @@ def generator(samples, batch_size = BATCH_SIZE):
 
 
 lines = []
-with open('./data/driving_log.csv') as csvfile:
+#with open('./data/data/data/driving_log.csv') as csvfile:
+with open('./edata/driving_log.csv') as csvfile:
     reader = csv.reader(csvfile)
     for line in reader:
         lines.append(line)
@@ -108,7 +118,7 @@ with open('./data/driving_log.csv') as csvfile:
 # Strip out some of the data
 remove_straights(lines)
 
-train_samples, validation_samples = train_test_split(lines, test_size = 0.2)
+train_samples, validation_samples = train_test_split(lines, test_size = .20)
 
 train_generator = generator(train_samples, batch_size = BATCH_SIZE)
 validation_generator = generator(validation_samples, batch_size = BATCH_SIZE)
@@ -118,15 +128,19 @@ model = Sequential()
 #Normalize the data
 model.add(Lambda(lambda x: x / 255.0 - 0.5, input_shape=(160, 320, 3))) #normalize the data and give it a mean of 0
 # Crop the data
-model.add(Cropping2D(cropping=((70,25),(0,0))))
+model.add(Cropping2D(cropping=((50,25),(0,0))))
 # Nvidia model taken from: https://devblogs.nvidia.com/deep-learning-self-driving-cars/
 model.add(Convolution2D(24, 5, 5, subsample=(2,2), activation='relu'))
+#model.add(SpatialDropout2D(.2))
 model.add(Convolution2D(36, 5, 5, subsample=(2,2), activation='relu'))
+#model.add(SpatialDropout2D(.2))
 model.add(Convolution2D(48, 5, 5, subsample=(2,2), activation='relu'))
+#model.add(SpatialDropout2D(.2))
 model.add(Convolution2D(64, 3, 3, activation='relu'))
 model.add(Convolution2D(64, 3, 3, activation='relu'))
 model.add(Flatten())
 model.add(Dense(100))
+#model.add(Dropout(.5))
 model.add(Dense(50))
 model.add(Dense(10))
 model.add(Dense(1))
