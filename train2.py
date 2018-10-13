@@ -8,7 +8,7 @@ import cv2
 import matplotlib.image as mpimg
 import keras
 from keras.models import Sequential
-from keras.layers import Flatten, Dense, Lambda, Cropping2D, Convolution2D, MaxPooling2D, Dropout, SpatialDropout2D
+from keras.layers import Flatten, Dense, Lambda, Convolution2D, MaxPooling2D, Dropout, SpatialDropout2D
 import numpy as np
 
 def get_filename(path):
@@ -58,11 +58,9 @@ model.add(MaxPooling2D())
 model.add(Convolution2D(16,5,5, activation= "relu"))
 model.add(MaxPooling2D())
 model.add(Flatten())
-model.add(Dense(1164, activation='relu'))
-model.add(Dense(100, activation='relu'))
-model.add(Dense(50, activation='relu'))
-model.add(Dense(10, activation='relu'))
-model.add(Dense(1, activation='relu'))
+model.add(Dense(120))
+model.add(Dense(84))
+model.add(Dense(1))
 
 # compile the model
 model.compile(optimizer='adam', loss='mse')
