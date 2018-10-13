@@ -64,4 +64,4 @@ model.add(Dense(1))
 
 model.compile(optimizer='adam', loss='mse')
 model.fit(X_train, Y_train, validation_split=0.2, shuffle=True, nb_epoch=5)
-model.save('model2.h5')
+model.save('model.h5')
