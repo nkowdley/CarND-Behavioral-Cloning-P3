@@ -8,7 +8,7 @@ import cv2
 import matplotlib.image as mpimg
 import keras
 from keras.models import Sequential
-from keras.layers import Flatten, Dense, Lambda, Convolution2D, MaxPooling2D, Dropout, SpatialDropout2D
+from keras.layers import Flatten, Dense, Lambda, Cropping2D, Convolution2D, MaxPooling2D, Dropout, SpatialDropout2D
 import numpy as np
 
 def get_filename(path):
