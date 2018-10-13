@@ -35,9 +35,20 @@ for line in lines:
     measurement = line[3]
     measurements.append(measurement)
 
-X_train = np.array(images)
-print(X_train.shape)
-Y_train = np.array(measurements)
+augmented_images = []
+augmented_measurements = []
+
+for image, measurement in zip(images, measurements):
+    #standard images
+    augmented_images.append(image)
+    augmented_measurements.append(measurement)
+    flipped_image = cv2.flip(image, 1)
+    flipped_measurement = float(measurement) * -1.0
+    augmented_images.append(flipped_image)
+    augmented_measurements.append(flipped_measurement)
+
+X_train = np.array(augmented_images)
+Y_train = np.array(augmented_measurements)
 
 #Instantiate the model
 model = Sequential()
