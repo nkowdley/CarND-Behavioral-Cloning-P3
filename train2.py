@@ -13,7 +13,7 @@ import numpy as np
 
 #Globals
 CORRECTION_FACTOR = 0.2 # How much to correct our steering measurement
-DEBUG = True # Whether or not to print out debug information.  This will slow down the program significantly
+DEBUG = False # Whether or not to print out debug information.  This will slow down the program significantly
 EPOCHS = 5 # Number of Epochs to train the model
 STRAIGHT_THRESHOLD = 0.0 # The steering measurement threshold where we drop
 STRAIGHT_DROP_PROB = .9 # Amount of straight samples to drop
