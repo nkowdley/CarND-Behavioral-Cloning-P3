@@ -145,3 +145,4 @@ if MODEL is 2:
 model.compile(optimizer='adam', loss='mse')
 model.fit(X_train, Y_train, validation_split=0.2, shuffle=True, epochs=EPOCHS)
 model.save('model.h5')
+keras.backend.clear_session()
