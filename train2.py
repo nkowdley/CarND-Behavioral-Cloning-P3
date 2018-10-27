@@ -17,6 +17,7 @@ DEBUG = False # Whether or not to print out debug information.  This will slow d
 EPOCHS = 5 # Number of Epochs to train the model
 STRAIGHT_THRESHOLD = 0.0 # The steering measurement threshold where we drop
 STRAIGHT_DROP_PROB = .9 # Amount of straight samples to drop
+MODEL = 2 # The keras model to use. 1 is Lenet, 2 is NVIDIA
 
 def get_filename(path):
     """
@@ -107,17 +108,36 @@ X_train = np.array(augmented_images)
 Y_train = np.array(augmented_measurements)
 
 #Instantiate the model
-model = Sequential()
-model.add(Lambda(lambda x: x / 255.0 - .5, input_shape=(160,320,3)))
-model.add(Cropping2D(cropping=((70,25),(0,0))))
-model.add(Convolution2D(6,5,5, activation= "relu"))
-model.add(MaxPooling2D())
-model.add(Convolution2D(16,5,5, activation= "relu"))
-model.add(MaxPooling2D())
-model.add(Flatten())
-model.add(Dense(120))
-model.add(Dense(84))
-model.add(Dense(1))
+# Lenet Model
+if MODEL is 1:
+    model = Sequential()
+    model.add(Lambda(lambda x: x / 255.0 - .5, input_shape=(160,320,3)))
+    model.add(Cropping2D(cropping=((70,25),(0,0))))
+    model.add(Convolution2D(6,5,5, activation= "relu"))
+    model.add(MaxPooling2D())
+    model.add(Convolution2D(16,5,5, activation= "relu"))
+    model.add(MaxPooling2D())
+    model.add(Flatten())
+    model.add(Dense(120))
+    model.add(Dense(84))
+    model.add(Dense(1))
+# NVIDIA Model
+if MODEL is 2:
+    model = Sequential()
+    model.add(Lambda(lambda x: x / 255.0 - .5, input_shape=(160,320,3)))
+    model.add(Cropping2D(cropping=((70,25),(0,0))))
+    model.add(Convolution2D(24,5,5,subsample=(2,2), activation= "relu"))
+    model.add(Convolution2D(36,5,5,subsample=(2,2), activation= "relu"))
+    model.add(Convolution2D(48,5,5,subsample=(2,2), activation= "relu"))
+    model.add(Convolution2D(64,3,3, activation= "relu"))
+    model.add(Convolution2D(64,3,3, activation= "relu"))
+    model.add(Flatten())
+    model.add(Dense(1164))
+    model.add(Dense(100))
+    model.add(Dense(50))
+    model.add(Dense(10))
+    model.add(Dense(1))
+
 
 # compile the model
 model.compile(optimizer='adam', loss='mse')
