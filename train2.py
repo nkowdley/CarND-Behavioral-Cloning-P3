@@ -8,12 +8,12 @@ import cv2
 import matplotlib.image as mpimg
 import keras
 from keras.models import Sequential
-from keras.layers import Flatten, Dense, Lambda, Convolution2D, MaxPooling2D, Dropout, SpatialDropout2D
+from keras.layers import Flatten, Dense, Lambda, Convolution2D, MaxPooling2D, Dropout, SpatialDropout2D, Cropping2D
 import numpy as np
 
 #Globals
 CORRECTION_FACTOR = 0.2 # How much to correct our steering measurement
-DEBUG = False # Whether or not to print out debug information.  This will slow down the program significantly
+DEBUG = True # Whether or not to print out debug information.  This will slow down the program significantly
 EPOCHS = 5 # Number of Epochs to train the model
 STRAIGHT_THRESHOLD = 0.0 # The steering measurement threshold where we drop
 STRAIGHT_DROP_PROB = .9 # Amount of straight samples to drop
@@ -57,8 +57,7 @@ def remove_straights(samples, drop_prob = STRAIGHT_DROP_PROB, threshold = STRAIG
                 i -= 1
                 num_of_deleted_samples += 1
         i += 1
-    if DEBUG:
-        print("Deleted " + str(num_of_deleted_samples) + " Samples")
+    print("Deleted " + str(num_of_deleted_samples) + " Samples")
     return samples
 
 #Main
@@ -110,6 +109,7 @@ Y_train = np.array(augmented_measurements)
 #Instantiate the model
 model = Sequential()
 model.add(Lambda(lambda x: x / 255.0 - .5, input_shape=(160,320,3)))
+model.add(Cropping2D(cropping=(70,25),(0,0)))
 model.add(Convolution2D(6,5,5, activation= "relu"))
 model.add(MaxPooling2D())
 model.add(Convolution2D(16,5,5, activation= "relu"))
