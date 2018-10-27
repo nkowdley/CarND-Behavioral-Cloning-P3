@@ -51,7 +51,7 @@ for line in lines:
         local_path = "./data/IMG/" + get_filename(line[i])
         image = mpimg.imread(local_path)
         images.append(image)
-        if Debug: 
+        if DEBUG: 
             print(local_path)
     # Append Center measurement
     measurement = float(line[3])
@@ -60,7 +60,7 @@ for line in lines:
     measurements.append(left_steering(measurement))
     # Append Right Measurement
     measurements.append(right_steering(measurement))
-    if Debug:
+    if DEBUG:
         print("Center Measurement" + str(measurements[0]))
         print("Left Measurement" + str(measurements[1]))
         print("Right Measurement" + str(measurements[2]))
