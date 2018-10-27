@@ -13,7 +13,7 @@ import numpy as np
 
 #Globals
 CORRECTION_FACTOR = 0.2 # How much to correct our steering measurement
-
+DEBUG = False # Whether or not to print out debug information.  This will slow down the program significantly
 def get_filename(path):
     """
     a helper function to get the filename of an image. 
@@ -51,7 +51,8 @@ for line in lines:
         local_path = "./data/IMG/" + get_filename(line[i])
         image = mpimg.imread(local_path)
         images.append(image)
-        print(local_path)
+        if Debug: 
+            print(local_path)
     # Append Center measurement
     measurement = float(line[3])
     measurements.append(measurement)
@@ -59,9 +60,10 @@ for line in lines:
     measurements.append(left_steering(measurement))
     # Append Right Measurement
     measurements.append(right_steering(measurement))
-    print("Center Measurement" + str(measurements[0]))
-    print("Left Measurement" + str(measurements[1]))
-    print("Right Measurement" + str(measurements[2]))
+    if Debug:
+        print("Center Measurement" + str(measurements[0]))
+        print("Left Measurement" + str(measurements[1]))
+        print("Right Measurement" + str(measurements[2]))
 
 augmented_images = []
 augmented_measurements = []
@@ -92,5 +94,5 @@ model.add(Dense(1))
 
 # compile the model
 model.compile(optimizer='adam', loss='mse')
-model.fit(X_train, Y_train, validation_split=0.2, shuffle=True, nb_epoch=5)
+model.fit(X_train, Y_train, validation_split=0.2, shuffle=True, epochs=5)
 model.save('model.h5')
