@@ -14,6 +14,10 @@ import numpy as np
 #Globals
 CORRECTION_FACTOR = 0.2 # How much to correct our steering measurement
 DEBUG = False # Whether or not to print out debug information.  This will slow down the program significantly
+EPOCHS = 5 # Number of Epochs to train the model
+STRAIGHT_THRESHOLD = 0.0 # The steering measurement threshold where we drop
+STRAIGHT_DROP_PROB = .9 # Amount of straight samples to drop
+
 def get_filename(path):
     """
     a helper function to get the filename of an image. 
@@ -36,6 +40,27 @@ def right_steering(measurement):
     measurement = (measurement - CORRECTION_FACTOR)
     return measurement
 
+def remove_straights(samples, drop_prob = STRAIGHT_DROP_PROB, threshold = STRAIGHT_THRESHOLD):
+    """
+    a helper function to remove a percentage(keep_prob) of the samples that have a steering near 0
+    This is to prevent overfitting of straights
+    """
+    i = 1 # Start at one, since we are manipulating array indices
+    num_of_deleted_samples = 0
+    while i < len(samples):
+        measurement = samples[i][3]
+        if abs(float(measurement)) <= threshold:
+            if np.random.rand() < drop_prob:
+                if DEBUG:
+                    printf("Deleting Sample: " + str(samples[i][0]) + " Measurement of: " + str(samples[i][3])
+                del samples[i]
+                i -= 1
+                num_of_deleted_samples += 1
+        i += 1
+    if DEBUG:
+        printf("Deleted " + str(num_of_deleted_samples) + " Samples")
+    return samples
+
 #Main
 lines = []
 with open('./data/driving_log.csv') as csvfile:
@@ -44,9 +69,11 @@ with open('./data/driving_log.csv') as csvfile:
     for line in reader:
         lines.append(line)
 
+samples = remove_straights(lines)
+
 images = []
 measurements = []
-for line in lines:
+for line in samples:
     for i in range(0,3):
         local_path = "./data/IMG/" + get_filename(line[i])
         image = mpimg.imread(local_path)
@@ -94,5 +121,5 @@ model.add(Dense(1))
 
 # compile the model
 model.compile(optimizer='adam', loss='mse')
-model.fit(X_train, Y_train, validation_split=0.2, shuffle=True, epochs=5)
+model.fit(X_train, Y_train, validation_split=0.2, shuffle=True, epochs=EPOCHS)
 model.save('model.h5')
