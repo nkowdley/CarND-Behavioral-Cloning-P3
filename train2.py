@@ -110,6 +110,7 @@ Y_train = np.array(augmented_measurements)
 #Instantiate the model
 # Lenet Model
 if MODEL is 1:
+    print("Using Model: LENET")
     model = Sequential()
     model.add(Lambda(lambda x: x / 255.0 - .5, input_shape=(160,320,3)))
     model.add(Cropping2D(cropping=((70,25),(0,0))))
@@ -123,6 +124,7 @@ if MODEL is 1:
     model.add(Dense(1))
 # NVIDIA Model
 if MODEL is 2:
+    print("Using Model: NVIDIA")
     model = Sequential()
     model.add(Lambda(lambda x: x / 255.0 - .5, input_shape=(160,320,3)))
     model.add(Cropping2D(cropping=((70,25),(0,0))))
