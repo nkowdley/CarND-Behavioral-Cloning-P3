@@ -11,6 +11,9 @@ from keras.models import Sequential
 from keras.layers import Flatten, Dense, Lambda, Convolution2D, MaxPooling2D, Dropout, SpatialDropout2D
 import numpy as np
 
+#Globals
+CORRECTION_FACTOR = 0.2 # How much to correct our steering measurement
+
 def get_filename(path):
     """
     a helper function to get the filename of an image. 
@@ -19,6 +22,21 @@ def get_filename(path):
     """
     return path.split('/')[-1]
 
+def left_steering(measurement):
+    """
+    a helper function to make sure we do not over correct
+    """
+    measurement = (measurement + CORRECTION_FACTOR)
+    return measurement
+
+def right_steering(measurement):
+    """
+    a helper function to make sure we do not over correct
+    """
+    measurement = (measurement - CORRECTION_FACTOR)
+    return measurement
+
+#Main
 lines = []
 with open('./data/driving_log.csv') as csvfile:
     reader = csv.reader(csvfile)
@@ -29,11 +47,21 @@ with open('./data/driving_log.csv') as csvfile:
 images = []
 measurements = []
 for line in lines:
-    local_path = "./data/IMG/" + get_filename(line[0])
-    image = mpimg.imread(local_path)
-    images.append(image)
-    measurement = line[3]
+    for i in range(0,3):
+        local_path = "./data/IMG/" + get_filename(line[i])
+        image = mpimg.imread(local_path)
+        images.append(image)
+        print(local_path)
+    # Append Center measurement
+    measurement = float(line[3])
     measurements.append(measurement)
+    # Append Left Measurement
+    measurements.append(left_steering(measurement))
+    # Append Right Measurement
+    measurements.append(right_steering(measurement))
+    print("Center Measurement" + str(measurements[0]))
+    print("Left Measurement" + str(measurements[1]))
+    print("Right Measurement" + str(measurements[2]))
 
 augmented_images = []
 augmented_measurements = []
