@@ -52,13 +52,13 @@ def remove_straights(samples, drop_prob = STRAIGHT_DROP_PROB, threshold = STRAIG
         if abs(float(measurement)) <= threshold:
             if np.random.rand() < drop_prob:
                 if DEBUG:
-                    printf("Deleting Sample: " + str(samples[i][0]) + " Measurement of: " + str(samples[i][3])
+                    print("Deleting Sample: " + str(samples[i][0]) + " Measurement of: " + str(samples[i][3]))
                 del samples[i]
                 i -= 1
                 num_of_deleted_samples += 1
         i += 1
     if DEBUG:
-        printf("Deleted " + str(num_of_deleted_samples) + " Samples")
+        print("Deleted " + str(num_of_deleted_samples) + " Samples")
     return samples
 
 #Main
